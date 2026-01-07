@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:24.04
 
 ENV APACHE_RUN_USER     www-data
 ENV APACHE_RUN_GROUP    www-data
@@ -20,14 +20,14 @@ RUN apt-get update && apt-get install -y apache2 \
 	curl \
 	wget \
 	zip \
-	php7.4 \
-	php7.4-curl \
-	php7.4-gd \
-	php7.4-xml \
-	php7.4-zip \
+	php \
+	php-curl \
+	php-gd \
+	php-xml \
+	php-zip \
 	php-mysql \
 	php-ldap \
-	libapache2-mod-php7.4 \
+	libapache2-mod-php \
 	mysql-client \
         dcraw \
 	ffmpeg \
@@ -36,13 +36,13 @@ RUN apt-get update && apt-get install -y apache2 \
 	imagemagick \
 	libreoffice \
 	vim \
-        python3.8 \
-        pip \
+        python3 \
+        python3-pdfminer \
         exiftool
         
 
 #GMAGICK
-RUN apt-get install -y php-pear php7.4-dev graphicsmagick libgraphicsmagick1-dev \
+RUN apt-get install -y php-pear php-dev graphicsmagick libgraphicsmagick1-dev \
         && pecl channel-update pecl.php.net \
 	&& pecl install gmagick-2.0.6RC1
 
@@ -61,7 +61,7 @@ RUN ln -s /$CA_PROVIDENCE_DIR/media /$CA_PAWTUCKET_DIR/media
 RUN chown -R www-data:www-data /var/www
 
 # PDF fulltext search
-RUN pip install pdfminer
+# RUN pip install pdfminer
 
 # Create a backup of the default conf files in case directory is mounted
 RUN mkdir -p /var/ca/providence/conf
@@ -70,7 +70,7 @@ RUN mkdir -p /var/ca/pawtucket/conf
 RUN cp -r /$CA_PAWTUCKET_DIR/app/conf/* /var/ca/pawtucket/conf
 
 # Copy our local files
-COPY php.ini /etc/php/7.4/apache2/php.ini
+COPY php.ini /etc/php/8.3/apache2/php.ini
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod 777 /entrypoint.sh
 
