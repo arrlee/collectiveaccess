@@ -1,3 +1,8 @@
+https://manual.collectiveaccess.org/providence/user/setup/installation.html
+
+vi /var/www/providence/setup.php
+
+
 # CollectiveAccess
 
 ## News

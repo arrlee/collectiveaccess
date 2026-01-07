@@ -1,4 +1,4 @@
-version: "3.5"
+version: "3.7"
 services:
   db:
     image: mysql:5.7
@@ -9,10 +9,12 @@ services:
       - MYSQL_ROOT_PASSWORD=rootpass
       - MYSQL_USER=user
       - MYSQL_PASSWORD=pass
-    expose:
-      - "3306"
+        # expose:
+        # - "3306"
         # ports:
         # - "3306:3306"
+    networks:
+      - app-network 
 
   backend:
     image: collective:latest
@@ -22,19 +24,24 @@ services:
       - DB_ROOT_PASSWORD=rootpass
       - DB_USER=user
       - DB_PASSWORD=pass
-      - DISPLAY_NAME=My Archive # optional
+      - DISPLAY_NAME=Electric database # optional
       - ADMIN_EMAIL=admin@my-archive.tld # optional
       - SMTP_SERVER=mail.my-archive.tld  # optional
     volumes:
-        - ./backend-config:/var/www/providence/app/conf
-        - ./backend-media:/var/www/providence/media/
-        - ./frontend-config:/var/www/app/conf
+      - ./backend-config:/var/www/providence/app/conf
+      - ./backend-media:/var/www/providence/media/
+      - ./frontend-config:/var/www/app/conf
     depends_on:
       - db
     ports:
-      - "8081:80"
+      - "8083:80"
+    networks:
+      - app-network 
 
 volumes:
   db-data:
   backend-config:
   backend-media:
+networks:
+  app-network:
+    driver: bridge

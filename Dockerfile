@@ -32,8 +32,14 @@ RUN apt-get update && apt-get install -y apache2 \
         dcraw \
 	ffmpeg \
 	ghostscript \
+        poppler-utils \
 	imagemagick \
-	libreoffice
+	libreoffice \
+	vim \
+        python3.8 \
+        pip \
+        exiftool
+        
 
 #GMAGICK
 RUN apt-get install -y php-pear php7.4-dev graphicsmagick libgraphicsmagick1-dev \
@@ -53,6 +59,9 @@ RUN rm -rf /var/www/html
 RUN ln -s /$CA_PROVIDENCE_DIR/media /$CA_PAWTUCKET_DIR/media
 
 RUN chown -R www-data:www-data /var/www
+
+# PDF fulltext search
+RUN pip install pdfminer
 
 # Create a backup of the default conf files in case directory is mounted
 RUN mkdir -p /var/ca/providence/conf
