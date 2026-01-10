@@ -38,7 +38,8 @@ RUN apt-get update && apt-get install -y apache2 \
 	vim \
         python3.8 \
         pip \
-        exiftool
+        exiftool \
+        python3-pdfminer pdfminer-data
         
 
 #GMAGICK
