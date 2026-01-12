@@ -28,6 +28,8 @@ RUN apt-get update && apt-get install -y apache2 \
 	php-mysql \
 	php-ldap \
         php-intl \
+        php-bcmath \
+        composer \
 	libapache2-mod-php \
 	mysql-client \
         dcraw \
@@ -62,9 +64,6 @@ RUN ln -s /$CA_PROVIDENCE_DIR/media /$CA_PAWTUCKET_DIR/media
 
 RUN chown -R www-data:www-data /var/www
 
-# PDF fulltext search
-# RUN pip install pdfminer
-
 # Create a backup of the default conf files in case directory is mounted
 RUN mkdir -p /var/ca/providence/conf
 RUN cp -r /$CA_PROVIDENCE_DIR/app/conf/* /var/ca/providence/conf
@@ -72,8 +71,12 @@ RUN mkdir -p /var/ca/pawtucket/conf
 RUN cp -r /$CA_PAWTUCKET_DIR/app/conf/* /var/ca/pawtucket/conf
 
 # Copy our local files
-# COPY php.ini /etc/php/8.3/apache2/php.ini
 COPY php.ini_cli /etc/php/8.3/cli/php.ini
+
+ENV COMPOSER_ALLOW_SUPERUSER=1
+WORKDIR /var/www
+RUN composer install
+
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod 777 /entrypoint.sh
 
