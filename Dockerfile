@@ -27,6 +27,7 @@ RUN apt-get update && apt-get install -y apache2 \
 	php-zip \
 	php-mysql \
 	php-ldap \
+        php-intl \
 	libapache2-mod-php \
 	mysql-client \
         dcraw \

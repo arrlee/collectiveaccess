@@ -19,6 +19,7 @@ services:
   backend:
     image: collective:2.0.9
     environment:
+      - COMPOSER_ROOT_VERSION=2.0.9
       - DB_HOST=db
       - DB_NAME=collective
       - DB_ROOT_PASSWORD=rootpass
