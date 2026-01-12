@@ -72,7 +72,8 @@ RUN mkdir -p /var/ca/pawtucket/conf
 RUN cp -r /$CA_PAWTUCKET_DIR/app/conf/* /var/ca/pawtucket/conf
 
 # Copy our local files
-COPY php.ini /etc/php/8.3/apache2/php.ini
+# COPY php.ini /etc/php/8.3/apache2/php.ini
+COPY php.ini_cli /etc/php/8.3/cli/php.ini
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod 777 /entrypoint.sh
 
