@@ -17,7 +17,7 @@ services:
       - app-network 
 
   backend:
-    image: collective:latest
+    image: collective:2.0.9
     environment:
       - DB_HOST=db
       - DB_NAME=collective
