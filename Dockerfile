@@ -50,10 +50,11 @@ RUN apt-get install -y php-pear php-dev graphicsmagick libgraphicsmagick1-dev \
         && pecl channel-update pecl.php.net \
 	&& pecl install gmagick-2.0.6RC1
 
-# uncomment for migration
-COPY oldvarwww /var/www
 RUN mkdir -p $CA_PROVIDENCE_DIR
 RUN mkdir -p $CA_PAWTUCKET_DIR
+
+# uncomment for migration
+COPY oldvarwww /var/www
 
 WORKDIR /tmp
 
