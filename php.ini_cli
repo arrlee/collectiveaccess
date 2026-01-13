@@ -943,7 +943,7 @@ default_socket_timeout = 60
 ;extension=gd
 ;extension=gettext
 ;extension=gmp
-extension=intl
+;extension=intl
 ;extension=imap
 ;extension=mbstring
 ;extension=exif      ; Must be after mbstring as it depends on it
@@ -974,6 +974,8 @@ extension=intl
 ;extension=zip
 
 ;zend_extension=opcache
+
+extension=gmagick.so
 
 ;;;;;;;;;;;;;;;;;;;
 ; Module Settings ;

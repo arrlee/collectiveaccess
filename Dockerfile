@@ -50,19 +50,31 @@ RUN apt-get install -y php-pear php-dev graphicsmagick libgraphicsmagick1-dev \
         && pecl channel-update pecl.php.net \
 	&& pecl install gmagick-2.0.6RC1
 
-RUN curl -SsL https://github.com/collectiveaccess/providence/archive/$CA_PROVIDENCE_VERSION.tar.gz | tar -C /var/www/ -xzf -
-RUN mv /var/www/providence-$CA_PROVIDENCE_VERSION /var/www/providence
-RUN cd $CA_PROVIDENCE_DIR && cp setup.php-dist setup.php
+# uncomment for migration
+COPY oldvarwww /var/www
+RUN mkdir -p $CA_PROVIDENCE_DIR
+RUN mkdir -p $CA_PAWTUCKET_DIR
 
-RUN curl -SsL https://github.com/collectiveaccess/pawtucket2/archive/$CA_PAWTUCKET_VERSION.tar.gz | tar -C /var/www/ -xzf -
-RUN mv $CA_PAWTUCKET_DIR/pawtucket2-$CA_PAWTUCKET_VERSION/* /var/www
-RUN cd $CA_PAWTUCKET_DIR && cp setup.php-dist setup.php
+WORKDIR /tmp
+
+RUN curl -SsL https://github.com/collectiveaccess/pawtucket2/archive/$CA_PAWTUCKET_VERSION.tar.gz | tar -xzf -
+RUN cp -r pawtucket2-$CA_PAWTUCKET_VERSION/* $CA_PAWTUCKET_DIR
+RUN rm -r pawtucket2-$CA_PAWTUCKET_VERSION
+# uncomment for first installation
+# RUN cd $CA_PAWTUCKET_DIR && cp setup.php-dist setup.php
+
+RUN curl -SsL https://github.com/collectiveaccess/providence/archive/$CA_PROVIDENCE_VERSION.tar.gz | tar -xzf -
+RUN cp -r providence-$CA_PROVIDENCE_VERSION/* $CA_PROVIDENCE_DIR
+# uncomment for first installation
+# RUN cd $CA_PROVIDENCE_DIR && cp setup.php-dist setup.php
+RUN rm -r providence-$CA_PROVIDENCE_VERSION
+
 
 RUN sed -i "s@DocumentRoot \/var\/www\/html@DocumentRoot \/var\/www@g" /etc/apache2/sites-available/000-default.conf
 RUN rm -rf /var/www/html
 RUN ln -s /$CA_PROVIDENCE_DIR/media /$CA_PAWTUCKET_DIR/media
 
-RUN chown -R www-data:www-data /var/www
+RUN chown -R www-data:www-data $CA_PROVIDENCE_DIR $CA_PAWTUCKET_DIR
 
 # Create a backup of the default conf files in case directory is mounted
 RUN mkdir -p /var/ca/providence/conf
@@ -74,8 +86,18 @@ RUN cp -r /$CA_PAWTUCKET_DIR/app/conf/* /var/ca/pawtucket/conf
 COPY php.ini_cli /etc/php/8.3/cli/php.ini
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
-WORKDIR /var/www
-RUN composer install
+WORKDIR $CA_PAWTUCKET_DIR
+# "update" for migration, "install" for fresh installation
+# RUN find . -name composer.lock -exec rm {} \;
+# RUN composer install
+RUN composer update
+
+# RUN composer update
+WORKDIR $CA_PROVIDENCE_DIR
+# RUN find . -name composer.lock -exec rm {} \;
+# "update" for migration, "install" for fresh installation
+# RUN composer install
+RUN composer update
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod 777 /entrypoint.sh
